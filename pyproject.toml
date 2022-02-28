@@ -8,9 +8,10 @@ readme = "README.md"
 packages = [{include = "fpp_sle"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.10,<3.11"
 cosmoplots = "^0.1.5"
-numpy = "^1.22.2"
+numpy = ">=1.18,<1.22"
+numba = "^0.55.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.1.0"
