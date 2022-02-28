@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "fpp-sle"
+version = "0.0.1"
+description = "Implements FPP and SLE algorithms"
+authors = ["engeir <eirroleng@gmail.com>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+packages = [{include = "fpp_sle"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+cosmoplots = "^0.1.5"
+numpy = "^1.22.2"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.1.0"
+mypy = "^0.931"
+flake8 = "^4.0.1"
+pre-commit = "^2.17.0"
+pre-commit-hooks = "^4.1.0"
+pytest = "^7.0.1"
+isort = "^5.10.1"
+darglint = "^1.8.1"
+pyupgrade = "^2.31.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
