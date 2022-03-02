@@ -16,12 +16,40 @@ All functions in this module (starting with `as_`) should be decorated with `pas
         The mean of the rate process.
 """
 
-from typing import Tuple
+from typing import Callable, Tuple
 
 import numpy as np
 
 
-def pass_rate(func, rate, same_shape=True):
+def check_types(func) -> Callable[[np.ndarray, bool, np.ndarray, int], np.ndarray]:
+    """Check that the types of the arguments and return value are correct.
+
+    Parameters
+    ----------
+    func: Callable
+        The function to decorate.
+
+    Returns
+    -------
+    Callable[[np.ndarray, bool, np.ndarray, int], np.ndarray]
+        The decorated function.
+    """
+    # fmt: off
+    def check_types_wrapper(*args, **kwargs) -> np.ndarray:
+        if not isinstance(args[0], np.ndarray):
+            raise TypeError(f"First argument must be a numpy array (rate), found {type(args[0])}.")
+        if not isinstance(args[1], bool):
+            raise TypeError(f"Second argument must be a bool (same_shape), found {type(args[1])}.")
+        if not isinstance(args[2], np.ndarray):
+            raise TypeError(f"Third argument must be a numpy array (times), found {type(args[2])}.")
+        if not isinstance(args[3], int):
+            raise TypeError(f"Fourth argument must be an int (total_pulses), found {type(args[3])}.")
+        return func(*args, **kwargs)
+    # fmt: on
+    return check_types_wrapper
+
+
+def pass_rate(func, rate, same_shape=True) -> Callable[[np.ndarray, int], np.ndarray]:
     """Decorator function to pass the rate process to a function.
 
     This will also specify if the rate process has the same length as the time array.
@@ -48,6 +76,7 @@ def pass_rate(func, rate, same_shape=True):
     return inner
 
 
+@check_types
 def as_cumsum(
     rate: np.ndarray, same_shape: bool, times: np.ndarray, total_pulses: int
 ) -> np.ndarray:
@@ -98,12 +127,14 @@ def as_cumsum(
     return np.cumsum(rate) / rate.sum() * times[-1]
 
 
+@check_types
 def as_cox_process(
     rate: np.ndarray, same_shape: bool, times: np.ndarray, mu: float
 ) -> Tuple[np.ndarray, float]:
     raise NotImplementedError
 
 
+@check_types
 def as_inhomogenous_poisson_process(
     rate: np.ndarray, same_shape: bool, times: np.ndarray, mu: float
 ) -> Tuple[np.ndarray, float]:

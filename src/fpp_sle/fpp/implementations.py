@@ -44,7 +44,7 @@ class VariableRateForcing(forcing.ForcingGenerator):
 
     def set_arrival_times_function(
         self,
-        arrival_times_function: Callable[[np.ndarray, float], np.ndarray],
+        arrival_times_function: Callable[[np.ndarray, int], np.ndarray],
     ):
         self._arrival_times_function = arrival_times_function
 
@@ -59,15 +59,15 @@ class VariableRateForcing(forcing.ForcingGenerator):
     ):
         self._duration_distribution = duration_distribution_function
 
-    def _get_arrival_times(self, times, gamma) -> np.ndarray:
+    def _get_arrival_times(self, times: np.ndarray, total_pulses: int) -> np.ndarray:
         """Generate the arrival times.
 
         Parameters
         ----------
         times : np.ndarray
             The times at which the forcing is to be generated.
-        gamma : float
-            Intermittency parameter, long term mean of the rate process.
+        total_pulses : int
+            The total number of pulses.
 
         Returns
         -------
@@ -80,18 +80,18 @@ class VariableRateForcing(forcing.ForcingGenerator):
             If the arrival times function has not been set.
         """
         if self._arrival_times_function is not None:
-            return self._arrival_times_function(times, gamma)
+            return self._arrival_times_function(times, total_pulses)
         raise NotImplementedError(
             "No arrival times function has been set. "
             "Use `set_arrival_times_function` to set one."
         )
 
-    def _get_amplitudes(self, total_pulses) -> np.ndarray:
+    def _get_amplitudes(self, total_pulses: int) -> np.ndarray:
         if self._amplitude_distribution is not None:
             return self._amplitude_distribution(total_pulses)
         return np.random.default_rng().exponential(scale=np.ones(total_pulses))
 
-    def _get_durations(self, total_pulses) -> np.ndarray:
+    def _get_durations(self, total_pulses: int) -> np.ndarray:
         if self._duration_distribution is not None:
             return self._duration_distribution(total_pulses)
         return np.ones(total_pulses)
