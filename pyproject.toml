@@ -5,11 +5,10 @@ description = "Implements FPP and SLE algorithms"
 authors = ["engeir <eirroleng@gmail.com>"]
 license = "GPL-3.0-or-later"
 readme = "README.md"
-packages = [{include = "fpp_sle"}]
+packages = [{include = "fpp_sle", from = "src"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.11"
-cosmoplots = "^0.1.5"
 numpy = ">=1.18,<1.22"
 numba = "^0.55.1"
 
@@ -23,6 +22,7 @@ pytest = "^7.0.1"
 isort = "^5.10.1"
 darglint = "^1.8.1"
 pyupgrade = "^2.31.0"
+cosmoplots = "^0.1.5"
 
 [build-system]
 requires = ["poetry-core"]

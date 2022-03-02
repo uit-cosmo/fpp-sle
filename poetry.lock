@@ -72,7 +72,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 name = "cosmoplots"
 version = "0.1.5"
 description = "Routines to get a sane default configuration for production quality plots."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.8"
 
@@ -463,7 +463,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10,<3.11"
-content-hash = "31bca1bce9cce43475ab3c98dd16b951df7899cfd9754537057b99202758d66a"
+content-hash = "a37e62da0ac78fa97762cd2c9f9e5ba887e88369b55c561b9efdeb98350534e7"
 
 [metadata.files]
 atomicwrites = [
