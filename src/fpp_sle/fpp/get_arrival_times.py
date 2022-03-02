@@ -42,15 +42,15 @@ def pass_rate(func, rate, same_shape=True):
         The decorated function.
     """
 
-    def inner(*args):
+    def inner(*args) -> np.ndarray:
         return func(rate, same_shape, *args)
 
     return inner
 
 
 def as_cumsum(
-    rate: np.ndarray, same_shape: bool, times: np.ndarray, mu: float
-) -> Tuple[np.ndarray, float]:
+    rate: np.ndarray, same_shape: bool, times: np.ndarray, total_pulses: int
+) -> np.ndarray:
     """Convert a rate process to arrival times.
 
     Arrival times should be in ascending order, ending at `times[-1]`. We here assume
@@ -70,8 +70,8 @@ def as_cumsum(
         Defaults to True.
     times: np.ndarray
         The time axis.
-    mu: float
-        The mean of the rate process.
+    total_pulses: int
+        The total number of pulses to generate.
 
     Returns
     -------
@@ -83,14 +83,19 @@ def as_cumsum(
     ValueError
         If the rate process is shorter than the time array.
     """
-    if same_shape:
-        return np.cumsum(rate) / rate.sum() * times[-1], mu
-    if len(rate) < len(times):
-        raise ValueError("Rate process is shorter than time array.")
-    else:
-        ratio = int(len(rate) / len(times))
-        rate = rate[::ratio][: len(times)]
-    return np.cumsum(rate) / rate.sum() * times[-1], mu
+    # FIXME: High rate mean few arrivals, while the opposite should be the case.
+    print(
+        "WARNING: Function `fpp.get_arrival_times.as_cumsum` is not correct. "
+        + "Just used as a placeholder."
+    )
+    if not same_shape:
+        ratio = max(int(len(rate) / total_pulses), 1)
+        rate = rate[::ratio][:total_pulses]
+    if len(rate) != total_pulses:
+        raise ValueError(
+            f"Rate process is shorter than time array. Found {len(rate) = } < {total_pulses = }."
+        )
+    return np.cumsum(rate) / rate.sum() * times[-1]
 
 
 def as_cox_process(

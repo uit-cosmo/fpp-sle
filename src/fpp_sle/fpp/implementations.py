@@ -3,10 +3,7 @@
 from typing import Callable
 
 import numpy as np
-from model import forcing, point_model
-
-from fpp_sle import sde
-from fpp_sle.fpp import get_arrival_times
+from model import forcing
 
 
 class VariableRateForcing(forcing.ForcingGenerator):
@@ -39,16 +36,15 @@ class VariableRateForcing(forcing.ForcingGenerator):
         forcing.Forcing
             The generated forcing.
         """
-        arrival_times = self._get_arrival_times(times, gamma)
         total_pulses = int(max(times) * gamma)
-        # FIXME: The Forcing class checks if the provided `total_pulses` is equal to the
-        # length of the `arrival_times` array.
+        arrival_times = self._get_arrival_times(times, total_pulses)
         amplitudes = self._get_amplitudes(total_pulses)
         durations = self._get_durations(total_pulses)
         return forcing.Forcing(total_pulses, arrival_times, amplitudes, durations)
 
     def set_arrival_times_function(
-        self, arrival_times_function: Callable[[np.ndarray, float], np.ndarray]
+        self,
+        arrival_times_function: Callable[[np.ndarray, float], np.ndarray],
     ):
         self._arrival_times_function = arrival_times_function
 
@@ -99,16 +95,3 @@ class VariableRateForcing(forcing.ForcingGenerator):
         if self._duration_distribution is not None:
             return self._duration_distribution(total_pulses)
         return np.ones(total_pulses)
-
-
-if __name__ == "__main__":
-    gamma = 1.0
-    rate = sde.ornstein_uhlenbeck(dt=1, n=10, x0=0.1, theta=1.0, mu=gamma, sigma=1.0)
-    arrival_times_func = get_arrival_times.pass_rate(
-        get_arrival_times.as_cumsum, rate, one_to_one=True
-    )
-    frc = VariableRateForcing()
-    frc.set_arrival_times_function(arrival_times_func)
-    sp = point_model.PointModel(gamma=gamma, total_duration=10000, dt=0.01)
-    sp.set_custom_forcing_generator(frc)
-    times, signal = sp.make_realization()
