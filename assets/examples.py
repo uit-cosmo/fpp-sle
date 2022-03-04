@@ -51,7 +51,7 @@ def variable_rate_from_array() -> None:
     # shape as the time axis, `same_shape=True`) or if the rate function is much denser
     # (approximating a continuous function compared to the number of pulses).
     # arrival_times_func = fpp.get_arrival_times.pass_rate(cumsum, rate, same_shape=False)
-    arrival_times_func = fpp.get_arrival_times.pass_rate(inhom, rate, same_shape=False)
+    arrival_times_func = fpp.get_arrival_times.pass_rate(inhom, rate)
     # The above is equivalent to using a decorator on the `cumsum` function.
 
     # Now we create the forcing class and specify which arrival time function to use:
@@ -104,7 +104,7 @@ def variable_rate_from_function() -> None:
     # shape as the time axis, `same_shape=True`) or if the rate function is much denser
     # (approximating a continuous function compared to the number of pulses).
     # arrival_times_func = fpp.get_arrival_times.pass_rate(cumsum, rate, same_shape=False)
-    arrival_times_func = fpp.get_arrival_times.pass_rate(inhom, rate, same_shape=False)
+    arrival_times_func = fpp.get_arrival_times.pass_rate(inhom, rate)
     # The above is equivalent to using a decorator on the `cumsum` function.
 
     # Now we create the forcing class and specify which arrival time function to use:

@@ -8,9 +8,6 @@ when used with the `VariableRateForcing` class. They also take in the same set o
 parameters:
     rate: np.ndarray
         The rate process to convert.
-    same_shape: bool
-        If True, the rate process is assumed to be the same length as the time array.
-        Defaults to True.
     times: np.ndarray
         The time axis.
     total_pulses: int
@@ -22,7 +19,12 @@ from typing import Any, Callable, Tuple, Union
 import numpy as np
 
 
-def check_types(func) -> Callable[[np.ndarray, bool, np.ndarray, int], np.ndarray]:
+def check_types(
+    func,
+) -> Callable[
+    [Union[Callable[..., Union[float, np.ndarray]], np.ndarray], np.ndarray, int],
+    np.ndarray,
+]:
     """Check that the types of the arguments and return value are correct.
 
     Parameters
@@ -68,7 +70,15 @@ def pass_rate(func, rate, **kwargs: Any) -> Callable[[np.ndarray, int], np.ndarr
     -------
     function
         The decorated function.
+
+    Raises
+    ------
+    TypeError
+        If the first argument is not a function (should be a function to get arrival
+        times).
     """
+    if not callable(func):
+        raise TypeError(f"The first argument must be a function, found {type(func)}.")
 
     def inner(times: np.ndarray, total_pulses: int) -> np.ndarray:
         """Decorated function that is sent to the `VariableRateForcing` class.
@@ -163,7 +173,6 @@ def from_inhomogeneous_poisson_process(
     rate: Union[Callable[..., Union[float, np.ndarray]], np.ndarray],
     times: np.ndarray,
     total_pulses: int,
-    same_shape: bool = False,
     **kwargs: Any,
 ) -> np.ndarray:
     """Convert a rate process to arrival times as an inhomogeneous Poisson process.
@@ -185,9 +194,6 @@ def from_inhomogeneous_poisson_process(
         The time axis.
     total_pulses: int
         The total number of pulses to generate.
-    same_shape: bool
-        If True, the rate process is assumed to be the same length as the time array.
-        Defaults to False.
     **kwargs: Any
         Additional keyword arguments to pass to the rate process.
 
@@ -196,13 +202,22 @@ def from_inhomogeneous_poisson_process(
     np.ndarray
         The arrival times.
 
+    Raises
+    ------
+    ValueError
+        If the rate process is shorter than the time array.
+
     Notes
     -----
     The algorithm is based on the following discussion:
     https://stackoverflow.com/a/32713988
     """
     if isinstance(rate, np.ndarray):
-        if not same_shape:
+        if len(rate) < len(times):
+            raise ValueError(
+                f"Rate process is shorter than time array. Found {len(rate) = } < {len(times) = }."
+            )
+        elif len(rate) != len(times):
             # If the rate process is longer than the time axis, we split the rate process
             # in as large blocks as possible while making sure we get the same number of
             # blocks as we have time steps, then we take the average of the blocks.
