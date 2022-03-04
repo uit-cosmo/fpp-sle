@@ -39,6 +39,8 @@ def check_types(func) -> Callable[[np.ndarray, bool, np.ndarray, int], np.ndarra
     def check_types_wrapper(*args, **kwargs) -> np.ndarray:
         if not isinstance(args[0], np.ndarray) and not callable(args[0]):
             raise TypeError(f"First argument must be a numpy array or a callable (rate), found {type(args[0])}.")
+        elif isinstance(args[0], np.ndarray) and any(args[0] < 0):
+            raise ValueError(f"The rate process must be non-negative, found {min(args[0])}.")
         if not isinstance(args[1], np.ndarray):
             raise TypeError(f"Second argument must be a numpy array (times), found {type(args[1])}.")
         if not isinstance(args[2], int):
@@ -69,6 +71,20 @@ def pass_rate(func, rate, **kwargs: Any) -> Callable[[np.ndarray, int], np.ndarr
     """
 
     def inner(times: np.ndarray, total_pulses: int) -> np.ndarray:
+        """Decorated function that is sent to the `VariableRateForcing` class.
+
+        Parameters
+        ----------
+        times: np.ndarray
+            The time axis.
+        total_pulses: int
+            The total number of pulses.
+
+        Returns
+        -------
+        np.ndarray
+            The arrival times.
+        """
         return func(rate, times, total_pulses, **kwargs)
 
     return inner
@@ -119,20 +135,20 @@ def from_cumsum(
     # FIXME: High rate mean few arrivals, while the opposite should be the case.
     print(
         "WARNING: Function `fpp.get_arrival_times.from_cumsum` is not correct. "
-        + "Just used as a placeholder."
+        + "Just used as a placeholder. Use `from_inhomogeneous_poisson_process` instead."
     )
     if isinstance(rate, np.ndarray):
-        rate_realisaition = rate
+        rate_realization = rate
     else:
-        rate_realisaition = np.array(rate(times, **kwargs))
+        rate_realization = np.array(rate(times, **kwargs))
     if not same_shape:
-        ratio = max(int(len(rate_realisaition) / total_pulses), 1)
-        rate_realisaition = rate_realisaition[::ratio][:total_pulses]
-    if len(rate_realisaition) != total_pulses:
+        ratio = max(int(len(rate_realization) / total_pulses), 1)
+        rate_realization = rate_realization[::ratio][:total_pulses]
+    if len(rate_realization) != total_pulses:
         raise ValueError(
-            f"Rate process is shorter than time array. Found {len(rate_realisaition) = } < {total_pulses = }."
+            f"Rate process is shorter than time array. Found {len(rate_realization) = } < {total_pulses = }."
         )
-    return np.cumsum(rate_realisaition) / rate_realisaition.sum() * times[-1]
+    return np.cumsum(rate_realization) / rate_realization.sum() * times[-1]
 
 
 @check_types
@@ -148,24 +164,63 @@ def from_inhomogeneous_poisson_process(
     times: np.ndarray,
     total_pulses: int,
     same_shape: bool = False,
-    **kwargs,
+    **kwargs: Any,
 ) -> np.ndarray:
-    if isinstance(rate, np.ndarray):
-        rate_realisaition = rate
-        if not same_shape:
-            ratio = max(int(len(rate_realisaition) / total_pulses), 1)
-            rate_realisaition = rate_realisaition[::ratio]
-        return rate_realisaition[:total_pulses]
-    else:
-        arrival_times = np.array([])
-        while len(arrival_times) < total_pulses:
-            delta = times[1] - times[0]
-            t = np.arange(delta, times[-1], delta)
-            avg_rate = (rate(t, **kwargs) + rate(t + delta, **kwargs)) / 2.0
-            avg_prob = 1 - np.exp(-avg_rate * delta / 1000.0)
-            rand_throws = np.random.uniform(size=t.shape[0])
-            arrival_times = np.concatenate((arrival_times, t[rand_throws < avg_prob]))
-        arrival_times.sort()
-        arrival_times = arrival_times[:total_pulses]
+    """Convert a rate process to arrival times as an inhomogeneous Poisson process.
 
-        return arrival_times
+    The rate process is understood as a varying intermittency parameter used within the
+    FPP framework. If enough arrival times are not obtained from the rate process during
+    the first iteration, the algorithm will repeat the process and append the new arrival
+    times until there are more arrival times than total pulses. A `total_pulses` number of
+    arrival times are then uniformly sampled from the resulting process.
+
+    Parameters
+    ----------
+    rate: Union[Callable[..., Union[float, np.ndarray]], np.ndarray],
+        The rate process to convert. Can be a precomputed numpy array, or a callable. If
+        it is a callable, it must return a float or numpy array (depending on the input).
+        Any keyword arguments passed to `from_inhomogeneous_poisson_process` will be
+        passed on to the rate process callable.
+    times: np.ndarray
+        The time axis.
+    total_pulses: int
+        The total number of pulses to generate.
+    same_shape: bool
+        If True, the rate process is assumed to be the same length as the time array.
+        Defaults to False.
+    **kwargs: Any
+        Additional keyword arguments to pass to the rate process.
+
+    Returns
+    -------
+    np.ndarray
+        The arrival times.
+
+    Notes
+    -----
+    The algorithm is based on the following discussion:
+    https://stackoverflow.com/a/32713988
+    """
+    if isinstance(rate, np.ndarray):
+        if not same_shape:
+            # If the rate process is longer than the time axis, we split the rate process
+            # in as large blocks as possible while making sure we get the same number of
+            # blocks as we have time steps, then we take the average of the blocks.
+            new_length = int(len(rate) / len(times))
+            nearest_multiple = int(len(times) * new_length)
+            reshaped = rate[:nearest_multiple].reshape((len(times), new_length))
+            rate = np.sum(reshaped, axis=1)
+        # rate = np.r_[rate, np.zeros(1)]
+    arrival_times = np.array([])
+    while len(arrival_times) < total_pulses:
+        delta = times[1] - times[0]
+        if isinstance(rate, np.ndarray):
+            avg_rate = rate[:]  # (rate[:-1] + rate[1:]) / 2
+        else:
+            avg_rate = (rate(times, **kwargs) + rate(times + delta, **kwargs)) / 2.0
+        avg_prob = 1 - np.exp(-avg_rate * delta)
+        rand_throws = np.random.uniform(size=times.shape[0])
+        arrival_times = np.concatenate((arrival_times, times[rand_throws < avg_prob]))
+    arrival_times = np.random.choice(arrival_times, size=total_pulses)
+    arrival_times.sort()
+    return arrival_times
