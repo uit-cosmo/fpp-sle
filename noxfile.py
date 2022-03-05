@@ -130,6 +130,7 @@ def precommit(session: Session) -> None:
         "pre-commit",
         "pre-commit-hooks",
         "pytest",
+        "pyupgrade",
         "reorder-python-imports",
     )
     session.run("pre-commit", *args)
