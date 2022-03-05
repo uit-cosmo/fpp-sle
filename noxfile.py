@@ -116,6 +116,7 @@ def precommit(session: Session) -> None:
         The Session object.
     """
     args = session.posargs or ["run", "--all-files", "--show-diff-on-failure"]
+    session.install(".")
     session.install(
         "black",
         "darglint",
@@ -177,7 +178,7 @@ def tests(session: Session) -> None:
         The Session object.
     """
     session.install(".")
-    session.install("coverage[toml]", "pytest", "pygments", "scipy")
+    session.install("coverage[toml]", "pytest", "pygments")
     try:
         session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs)
     finally:
@@ -222,7 +223,7 @@ def typeguard(session: Session) -> None:
         The Session object.
     """
     session.install(".")
-    session.install("pytest", "typeguard", "pygments", "scipy")
+    session.install("pytest", "typeguard", "pygments")
     session.run("pytest", f"--typeguard-packages={package}", *session.posargs)
 
 
