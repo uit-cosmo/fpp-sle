@@ -14,7 +14,7 @@ parameters:
         The total number of pulses.
 """
 
-from typing import Any, Callable, Tuple, Union
+from typing import Any, Callable, Union
 
 import numpy as np
 
@@ -37,23 +37,31 @@ def check_types(
     Callable[[np.ndarray, bool, np.ndarray, int], np.ndarray]
         The decorated function.
     """
-    # fmt: off
+
     def check_types_wrapper(*args, **kwargs) -> np.ndarray:
         if not isinstance(args[0], np.ndarray) and not callable(args[0]):
-            raise TypeError(f"First argument must be a numpy array or a callable (rate), found {type(args[0])}.")
+            txt = "First argument must be a numpy array or a callable (rate), found"
+            raise TypeError(f"{txt} {type(args[0])}.")
         elif isinstance(args[0], np.ndarray) and any(args[0] < 0):
-            raise ValueError(f"The rate process must be non-negative, found {min(args[0])}.")
+            txt = f"The rate process must be non-negative, found {min(args[0])}."
+            raise ValueError(txt)
         if not isinstance(args[1], np.ndarray):
-            raise TypeError(f"Second argument must be a numpy array (times), found {type(args[1])}.")
+            txt = (
+                f"Second argument must be a numpy array (times), found {type(args[1])}."
+            )
+            raise TypeError(txt)
         if not isinstance(args[2], int):
-            raise TypeError(f"Third argument must be an int (total_pulses), found {type(args[2])}.")
+            txt = (
+                f"Third argument must be an int (total_pulses), found {type(args[2])}."
+            )
+            raise TypeError(txt)
         return func(*args, **kwargs)
-    # fmt: on
+
     return check_types_wrapper
 
 
 def pass_rate(func, rate, **kwargs: Any) -> Callable[[np.ndarray, int], np.ndarray]:
-    """Decorator function to pass the rate process to a function.
+    """Decorate a function by passing the in a rate process.
 
     This will also specify if the rate process has the same length as the time array.
 
@@ -63,7 +71,7 @@ def pass_rate(func, rate, **kwargs: Any) -> Callable[[np.ndarray, int], np.ndarr
         The function to decorate.
     rate: np.ndarray
         The rate process to pass on to the function.
-    **kwargs: Any
+    kwargs: Any
         Additional keyword arguments to pass to the function.
 
     Returns
@@ -81,7 +89,9 @@ def pass_rate(func, rate, **kwargs: Any) -> Callable[[np.ndarray, int], np.ndarr
         raise TypeError(f"The first argument must be a function, found {type(func)}.")
 
     def inner(times: np.ndarray, total_pulses: int) -> np.ndarray:
-        """Decorated function that is sent to the `VariableRateForcing` class.
+        """Pass on arguments to the decorated function.
+
+        This is the function that is sent to the `VariableRateForcing` class.
 
         Parameters
         ----------
@@ -129,7 +139,7 @@ def from_cumsum(
     same_shape: bool
         If True, the rate process is assumed to be the same length as the time array.
         Defaults to True.
-    **kwargs: Any
+    kwargs: Any
         Additional keyword arguments to pass to the rate process.
 
     Returns
@@ -156,16 +166,10 @@ def from_cumsum(
         rate_realization = rate_realization[::ratio][:total_pulses]
     if len(rate_realization) != total_pulses:
         raise ValueError(
-            f"Rate process is shorter than time array. Found {len(rate_realization) = } < {total_pulses = }."
+            "Rate process is shorter than time array. "
+            + f"Found {len(rate_realization) = } < {total_pulses = }."
         )
     return np.cumsum(rate_realization) / rate_realization.sum() * times[-1]
-
-
-@check_types
-def from_cox_process(
-    rate: np.ndarray, same_shape: bool, times: np.ndarray, mu: float
-) -> Tuple[np.ndarray, float]:
-    raise NotImplementedError
 
 
 @check_types
@@ -194,7 +198,7 @@ def from_inhomogeneous_poisson_process(
         The time axis.
     total_pulses: int
         The total number of pulses to generate.
-    **kwargs: Any
+    kwargs: Any
         Additional keyword arguments to pass to the rate process.
 
     Returns

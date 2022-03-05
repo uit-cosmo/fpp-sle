@@ -38,15 +38,36 @@ class VariableRateForcing(forcing.ForcingGenerator):
         durations = self._get_durations(total_pulses)
         return forcing.Forcing(total_pulses, arrival_times, amplitudes, durations)
 
-    # fmt: off
-    def set_arrival_times_function(self, f: Callable[[np.ndarray, int], np.ndarray]) -> None:
+    def set_arrival_times_function(
+        self, f: Callable[[np.ndarray, int], np.ndarray]
+    ) -> None:
+        """Set the arrival times function.
+
+        Parameters
+        ----------
+        f: Callable[[np.ndarray, int], np.ndarray]
+            The arrival times function.
+        """
         self._arrival_times_function = f
-    # fmt: on
 
     def set_amplitude_distribution(self, f: Callable[[int], np.ndarray]) -> None:
+        """Set the amplitude distribution function.
+
+        Parameters
+        ----------
+        f: Callable[[int], np.ndarray]
+            The amplitude distribution function.
+        """
         self._amplitude_distribution = f
 
     def set_duration_distribution(self, f: Callable[[int], np.ndarray]) -> None:
+        """Set the duration distribution function.
+
+        Parameters
+        ----------
+        f: Callable[[int], np.ndarray]
+            The duration distribution function.
+        """
         self._duration_distribution = f
 
     def _get_arrival_times(self, times: np.ndarray, total_pulses: int) -> np.ndarray:
