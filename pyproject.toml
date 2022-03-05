@@ -11,6 +11,7 @@ packages = [{include = "fpp_sle", from = "src"}]
 python = ">=3.10,<3.11"
 numpy = ">=1.18,<1.22"
 numba = "^0.55.1"
+superposed-pulses = "^1.2"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.1.0"
