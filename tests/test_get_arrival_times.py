@@ -65,13 +65,16 @@ def test_pass_rate() -> None:
         return abs(t)
 
     total_pulses = 10
+    # Must have callable as the first argument
     with pytest.raises(TypeError):
         _ = fpp.get_arrival_times.pass_rate(rate, time_array)
+    # Rate as callable
     arrival_times_func = fpp.get_arrival_times.pass_rate(
         fpp.get_arrival_times.from_inhomogeneous_poisson_process, rate_func
     )
     arrival_times = arrival_times_func(time_array, total_pulses)
     assert arrival_times.shape == (total_pulses,)
+    # Rate as array
     arrival_times_func = fpp.get_arrival_times.pass_rate(
         fpp.get_arrival_times.from_inhomogeneous_poisson_process, rate
     )

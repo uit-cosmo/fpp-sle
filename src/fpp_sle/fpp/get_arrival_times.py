@@ -225,12 +225,11 @@ def from_inhomogeneous_poisson_process(
             nearest_multiple = int(len(times) * new_length)
             reshaped = rate[:nearest_multiple].reshape((len(times), new_length))
             rate = np.sum(reshaped, axis=1)
-        # rate = np.r_[rate, np.zeros(1)]
     arrival_times = np.array([])
     while len(arrival_times) < total_pulses:
         delta = times[1] - times[0]
         if isinstance(rate, np.ndarray):
-            avg_rate = rate[:]  # (rate[:-1] + rate[1:]) / 2
+            avg_rate = rate[:]
         else:
             avg_rate = (rate(times, **kwargs) + rate(times + delta, **kwargs)) / 2.0
         avg_prob = 1 - np.exp(-avg_rate * delta)

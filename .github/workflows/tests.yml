@@ -1,0 +1,79 @@
+name: PyTest
+on:
+  - push
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { python-version: "3.8", os: ubuntu-latest, session: "mypy" }
+          - { python-version: "3.8", os: ubuntu-latest, session: "tests" }
+          - { python-version: "3.9", os: ubuntu-latest, session: "mypy" }
+          - { python-version: "3.9", os: ubuntu-latest, session: "tests" }
+          - { python-version: "3.10", os: macos-latest, session: "tests" }
+          - { python-version: "3.10", os: windows-latest, session: "tests" }
+          - { python-version: "3.10", os: ubuntu-latest, session: "mypy" }
+          - { python-version: "3.10", os: ubuntu-latest, session: "tests" }
+          - { python-version: "3.10", os: ubuntu-latest, session: "pre-commit" }
+          - { python-version: "3.10", os: ubuntu-latest, session: "docs-build" }
+          - { python-version: "3.10", os: ubuntu-latest, session: "xdoctest" }
+          - { python-version: "3.10", os: ubuntu-latest, session: "typeguard" }
+          - { python-version: "3.10", os: ubuntu-latest, session: "safety" }
+
+    env:
+      NOXSESSION: ${{ matrix.session }}
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      # Setup Python (faster than using Python container)
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          curl -sSL https://install.python-poetry.org | python - --preview
+          poetry install
+      - name: Run test suite
+        run: |
+          poetry run pytest
+
+  coverage:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      # Setup Python (faster than using Python container)
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          curl -sSL https://install.python-poetry.org | python - --preview
+          poetry install
+      - name: Run test suite
+        run: |
+          poetry run pytest --cov=./ --cov-report=xml
+      - name: Coverage upload
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          directory: ./coverage/reports/
+          files: ./coverage.xml # optional
+          # flags: unittests # optional
+          name: codecov-umbrella # optional
+          # fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
