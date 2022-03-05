@@ -119,7 +119,6 @@ def precommit(session: Session) -> None:
     session.install(".")
     session.install(
         "black",
-        "isort",
         "darglint",
         "flake8",
         "flake8-bandit",
@@ -129,8 +128,6 @@ def precommit(session: Session) -> None:
         "pep8-naming",
         "pre-commit",
         "pre-commit-hooks",
-        "pytest",
-        "pyupgrade",
         "reorder-python-imports",
     )
     session.run("pre-commit", *args)
