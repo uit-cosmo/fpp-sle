@@ -35,7 +35,7 @@ def rate_function(t):
     if not isinstance(arr, float):
         arr[arr < 0] = 0
     else:
-        arr = arr if arr > 0 else 0
+        arr = max(arr, 0)
     return arr
 
 
