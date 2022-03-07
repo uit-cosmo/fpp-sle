@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fpp-sle"
-version = "0.0.1"
+version = "0.0.3"
 description = "Implements FPP and SLE algorithms"
 authors = ["engeir <eirroleng@gmail.com>"]
 license = "GPL-3.0-or-later"
@@ -8,12 +8,14 @@ readme = "README.md"
 packages = [{include = "fpp_sle", from = "src"}]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
+python = ">=3.8,<3.11"
 numpy = ">=1.18,<1.22"
 numba = "^0.55.1"
+superposed-pulses = "^1.2"
 
-[tool.poetry.group.dev.dependencies]
+[tool.poetry.dev-dependencies]
 black = "^22.1.0"
+bandit = "1.7.2"
 mypy = "^0.931"
 flake8 = "^4.0.1"
 pre-commit = "^2.17.0"

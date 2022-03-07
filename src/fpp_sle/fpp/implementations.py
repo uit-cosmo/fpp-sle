@@ -14,10 +14,6 @@ class VariableRateForcing(forcing.ForcingGenerator):
     `set_amplitude_distribution` and `set_duration_distribution`.
     """
 
-    def __init__(self):
-        self._amplitude_distribution = None
-        self._duration_distribution = None
-
     def get_forcing(self, times: np.ndarray, gamma: float) -> forcing.Forcing:
         """Generate the forcing.
 
@@ -26,9 +22,9 @@ class VariableRateForcing(forcing.ForcingGenerator):
 
         Parameters
         ----------
-        times : np.ndarray
+        times: np.ndarray
             The times at which the forcing is to be generated.
-        gamma : float
+        gamma: float
             Intermittency parameter, long term mean of the rate process.
 
         Returns
@@ -43,30 +39,45 @@ class VariableRateForcing(forcing.ForcingGenerator):
         return forcing.Forcing(total_pulses, arrival_times, amplitudes, durations)
 
     def set_arrival_times_function(
-        self,
-        arrival_times_function: Callable[[np.ndarray, int], np.ndarray],
-    ):
-        self._arrival_times_function = arrival_times_function
+        self, f: Callable[[np.ndarray, int], np.ndarray]
+    ) -> None:
+        """Set the arrival times function.
 
-    def set_amplitude_distribution(
-        self,
-        amplitude_distribution_function: Callable[[int], np.ndarray],
-    ):
-        self._amplitude_distribution = amplitude_distribution_function
+        Parameters
+        ----------
+        f: Callable[[np.ndarray, int], np.ndarray]
+            The arrival times function.
+        """
+        self._arrival_times_function = f
 
-    def set_duration_distribution(
-        self, duration_distribution_function: Callable[[int], np.ndarray]
-    ):
-        self._duration_distribution = duration_distribution_function
+    def set_amplitude_distribution(self, f: Callable[[int], np.ndarray]) -> None:
+        """Set the amplitude distribution function.
+
+        Parameters
+        ----------
+        f: Callable[[int], np.ndarray]
+            The amplitude distribution function.
+        """
+        self._amplitude_distribution = f
+
+    def set_duration_distribution(self, f: Callable[[int], np.ndarray]) -> None:
+        """Set the duration distribution function.
+
+        Parameters
+        ----------
+        f: Callable[[int], np.ndarray]
+            The duration distribution function.
+        """
+        self._duration_distribution = f
 
     def _get_arrival_times(self, times: np.ndarray, total_pulses: int) -> np.ndarray:
         """Generate the arrival times.
 
         Parameters
         ----------
-        times : np.ndarray
+        times: np.ndarray
             The times at which the forcing is to be generated.
-        total_pulses : int
+        total_pulses: int
             The total number of pulses.
 
         Returns
@@ -76,22 +87,22 @@ class VariableRateForcing(forcing.ForcingGenerator):
 
         Raises
         ------
-        NotImplementedError
+        AttributeError
             If the arrival times function has not been set.
         """
-        if self._arrival_times_function is not None:
+        if hasattr(self, "_arrival_times_function"):
             return self._arrival_times_function(times, total_pulses)
-        raise NotImplementedError(
-            "No arrival times function has been set. "
-            "Use `set_arrival_times_function` to set one."
+        raise AttributeError(
+            "'VariableRateForcing' object has no attribute '_arrival_times_function'. "
+            "Did you mean: 'set_arrival_times_function'?"
         )
 
     def _get_amplitudes(self, total_pulses: int) -> np.ndarray:
-        if self._amplitude_distribution is not None:
+        if hasattr(self, "_amplitude_distribution"):
             return self._amplitude_distribution(total_pulses)
         return np.random.default_rng().exponential(scale=np.ones(total_pulses))
 
     def _get_durations(self, total_pulses: int) -> np.ndarray:
-        if self._duration_distribution is not None:
+        if hasattr(self, "_duration_distribution"):
             return self._duration_distribution(total_pulses)
         return np.ones(total_pulses)

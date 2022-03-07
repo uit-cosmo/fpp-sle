@@ -13,13 +13,13 @@ import numpy as np
 @nb.jit(nopython=True)
 def general_sde(
     dt: float,
-    N: int,
+    n: int,
     x0: float = 0,
     a: Callable[[float, int], float] = lambda x, i: 0 * x * i,
     b: Callable[[float, int], float] = lambda x, i: 1 + 0 * x * i,
     seed: Optional[float] = None,
 ) -> np.ndarray:
-    """Implementation of the basic Runga-Kutta method for SDEs.
+    """Implement the basic Runga-Kutta method for SDEs.
 
     If a and b depend on some previously defined time vector V(t) (say, a = x(t)
     sqrt(V(t))), use a = lambda x,i: x*np.sqrt(V[i]).
@@ -34,7 +34,7 @@ def general_sde(
     ----------
     dt : float
         Time step.
-    N : int
+    n : int
         Number of time steps/iterations.
     x0 : float
         Initial value.
@@ -59,16 +59,18 @@ def general_sde(
     if seed is not None:
         np.random.seed(seed)
     sqdt = dt**0.5
-    dW = np.random.normal(0, sqdt, N - 1)
-    dW2 = 0.5 * (dW**2 - dt) / sqdt
+    dw = np.random.normal(0, sqdt, n - 1)
+    dw2 = 0.5 * (dw**2 - dt) / sqdt
 
-    X = np.zeros(N)
-    X[0] = x0
-    for i in range(N - 1):
-        B = b(X[i], i)
-        B2 = b(X[i] + B * sqdt, i) - B
-        X[i + 1] = X[i] + a(X[i], i) * dt + B * dW[i] + B2 * dW2[i]
-    return X
+    signal = np.zeros(n)
+    signal[0] = x0
+    for i in range(n - 1):
+        b_instance = b(signal[i], i)
+        b_instance2 = b(signal[i] + b_instance * sqdt, i) - b_instance
+        signal[i + 1] = (
+            signal[i] + a(signal[i], i) * dt + b_instance * dw[i] + b_instance2 * dw2[i]
+        )
+    return signal
 
 
 @nb.jit(nopython=True)
@@ -119,19 +121,19 @@ def ornstein_uhlenbeck(
     if seed is not None:
         np.random.seed(seed)
     sqdt = dt**0.5
-    dW = np.random.normal(0, sqdt, n - 1)
+    dw = np.random.normal(0, sqdt, n - 1)
 
-    X = np.zeros(n)
-    X[0] = x0
+    signal = np.zeros(n)
+    signal[0] = x0
     for i in range(n - 1):
-        X[i + 1] = X[i] + theta * (mu - X[i]) * dt + sigma * dW[i]
-    return X
+        signal[i + 1] = signal[i] + theta * (mu - signal[i]) * dt + sigma * dw[i]
+    return signal
 
 
 @nb.jit(nopython=True)
 def geometric_brownian_motion(
     dt: float,
-    N: int,
+    n: int,
     x0: float = 0.0,
     mu: float = 1.0,
     sigma: float = 1.0,
@@ -149,7 +151,7 @@ def geometric_brownian_motion(
     ----------
     dt: float
         Time step.
-    N: int
+    n: int
         Number of time steps/iterations.
     x0: float
         Initial state.
@@ -168,22 +170,22 @@ def geometric_brownian_motion(
     if seed is not None:
         np.random.seed(seed)
     sqdt = dt**0.5
-    dW = np.random.normal(0, sqdt, N - 1)
-    dW2 = 0.5 * (dW**2 - dt) / sqdt
+    dw = np.random.normal(0, sqdt, n - 1)
+    dw2 = 0.5 * (dw**2 - dt) / sqdt
 
-    X = np.zeros(N)
-    X[0] = x0
-    for i in range(N - 1):
-        B = sigma * X[i]
-        B2 = sigma * (X[i] + B * sqdt) - B
-        X[i + 1] = X[i] + mu * X[i] * dt + B * dW[i] + B2 * dW2[i]
-    return X
+    signal = np.zeros(n)
+    signal[0] = x0
+    for i in range(n - 1):
+        b = sigma * signal[i]
+        b2 = sigma * (signal[i] + b * sqdt) - b
+        signal[i + 1] = signal[i] + mu * signal[i] * dt + b * dw[i] + b2 * dw2[i]
+    return signal
 
 
 @nb.jit(nopython=True)
 def stochastic_logistic_equation(
     dt: float,
-    N: int,
+    n: int,
     x0: float = 1.0,
     gamma: float = 1.0,
     log: bool = False,
@@ -203,7 +205,7 @@ def stochastic_logistic_equation(
     ----------
     dt: float
         Time step
-    N: int
+    n: int
         Number of iterations
     x0: float
         Initial state
@@ -230,9 +232,9 @@ def stochastic_logistic_equation(
     if seed is not None:
         np.random.seed(seed)
     sqdt = dt**0.5
-    dW = np.random.normal(0, sqdt, N - 1)
+    dw = np.random.normal(0, sqdt, n - 1)
     sigma = np.sqrt(2 / (1.0 + gamma))
-    X = np.zeros(N)
+    signal = np.zeros(n)
 
     if strong:
 
@@ -240,41 +242,46 @@ def stochastic_logistic_equation(
             return (gamma - np.exp(x)) / (1.0 + gamma)
 
         # Noise terms
-        zeta = np.random.normal(0, sqdt / np.sqrt(3.0), N - 1)
-        N1 = 0.75 * sigma * (dW + zeta)
-        N2 = 0.5 * sigma * (dW - zeta)
+        zeta = np.random.normal(0, sqdt / np.sqrt(3.0), n - 1)
+        n1 = 0.75 * sigma * (dw + zeta)
+        n2 = 0.5 * sigma * (dw - zeta)
 
         # Iteration
-        X[0] = np.log(x0)
-        for i in range(N - 1):
-            H2 = X[i] + a(X[i]) * dt
-            H3 = 0.75 * X[i] + 0.25 * (H2 + a(H2) * dt) + N1[i]
-            X[i + 1] = X[i] / 3.0 + (2.0 / 3.0) * (H3 + a(H3) * dt) + N2[i]
-        return np.exp(X)
+        signal[0] = np.log(x0)
+        for i in range(n - 1):
+            h2 = signal[i] + a(signal[i]) * dt
+            h3 = 0.75 * signal[i] + 0.25 * (h2 + a(h2) * dt) + n1[i]
+            signal[i + 1] = signal[i] / 3.0 + (2.0 / 3.0) * (h3 + a(h3) * dt) + n2[i]
+        return np.exp(signal)
 
     if (not strong) and log:
-        X[0] = np.log(x0)
-        for i in range(N - 1):
-            X[i + 1] = (
-                X[i] + (gamma - np.exp(X[i])) * dt / (1.0 + gamma) + sigma * dW[i]
+        signal[0] = np.log(x0)
+        for i in range(n - 1):
+            signal[i + 1] = (
+                signal[i]
+                + (gamma - np.exp(signal[i])) * dt / (1.0 + gamma)
+                + sigma * dw[i]
             )
-        return np.exp(X)
+        return np.exp(signal)
 
-    X[0] = x0
-    dW2 = 0.5 * (dW**2 - dt) / sqdt
-    for i in range(N - 1):
-        B = sigma * X[i]
-        B2 = sigma * (X[i] + B * sqdt) - B
-        X[i + 1] = (
-            X[i] + X[i] * (1.0 - X[i] / (1.0 + gamma)) * dt + B * dW[i] + B2 * dW2[i]
+    signal[0] = x0
+    dw2 = 0.5 * (dw**2 - dt) / sqdt
+    for i in range(n - 1):
+        b = sigma * signal[i]
+        b2 = sigma * (signal[i] + b * sqdt) - b
+        signal[i + 1] = (
+            signal[i]
+            + signal[i] * (1.0 - signal[i] / (1.0 + gamma)) * dt
+            + b * dw[i]
+            + b2 * dw2[i]
         )
-    return X
+    return signal
 
 
 @nb.jit(nopython=True)
-def SDE_GEXP(
+def sde_gexp(
     dt: float,
-    N: int,
+    n: int,
     x0: float = 2.0,
     gamma: float = 2.0,
     sqrt=True,
@@ -296,7 +303,7 @@ def SDE_GEXP(
     ----------
     dt: float
         Time steps.
-    N: int
+    n: int
         Number of time steps/iterations.
     x0: float
         Initial state.
@@ -315,22 +322,24 @@ def SDE_GEXP(
     if seed is not None:
         np.random.seed(seed)
     sqdt = dt**0.5
-    dW = np.random.normal(0, sqdt, N - 1)
-    X = np.zeros(N)
+    dw = np.random.normal(0, sqdt, n - 1)
+    signal = np.zeros(n)
     if sqrt:
-        X[0] = np.sqrt(x0)
-        for i in range(N - 1):
-            X[i + 1] = (
-                X[i]
-                + (0.5 / X[i]) * (gamma - 0.5 - X[i] ** 2) * dt
-                + dW[i] / np.sqrt(2.0)
+        signal[0] = np.sqrt(x0)
+        for i in range(n - 1):
+            signal[i + 1] = (
+                signal[i]
+                + (0.5 / signal[i]) * (gamma - 0.5 - signal[i] ** 2) * dt
+                + dw[i] / np.sqrt(2.0)
             )
-        return X**2
+        return signal**2
     else:
-        X[0] = x0
-        dW2 = 0.5 * (dW**2 - dt) / sqdt
-        for i in range(N - 1):
-            B = np.sqrt(2 * X[i])
-            B2 = np.sqrt(2 * (X[i] + B * sqdt)) - B
-            X[i + 1] = X[i] + (gamma - X[i]) * dt + B * dW[i] + B2 * dW2[i]
-        return X
+        signal[0] = x0
+        dw2 = 0.5 * (dw**2 - dt) / sqdt
+        for i in range(n - 1):
+            b = np.sqrt(2 * signal[i])
+            b2 = np.sqrt(2 * (signal[i] + b * sqdt)) - b
+            signal[i + 1] = (
+                signal[i] + (gamma - signal[i]) * dt + b * dw[i] + b2 * dw2[i]
+            )
+        return signal

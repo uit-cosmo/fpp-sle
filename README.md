@@ -1,5 +1,9 @@
 # fpp-sle
 
+[![codecov](https://codecov.io/gh/engeir/fpp-sle/branch/main/graph/badge.svg?token=8I5VE7LYA4)](https://codecov.io/gh/engeir/fpp-sle)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 > Implements FPP and SLE algorithms
 
 ## Usage
