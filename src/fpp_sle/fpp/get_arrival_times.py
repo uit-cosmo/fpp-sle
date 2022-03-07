@@ -162,7 +162,7 @@ def from_cumsum(
     else:
         rate_realization = np.array(rate(times, **kwargs))
     if not same_shape:
-        ratio = max(int(len(rate_realization) / total_pulses), 1)
+        ratio = max(len(rate_realization) // total_pulses, 1)
         rate_realization = rate_realization[::ratio][:total_pulses]
     if len(rate_realization) != total_pulses:
         raise ValueError(
@@ -225,7 +225,7 @@ def from_inhomogeneous_poisson_process(
             # If the rate process is longer than the time axis, we split the rate process
             # in as large blocks as possible while making sure we get the same number of
             # blocks as we have time steps, then we take the average of the blocks.
-            new_length = int(len(rate) / len(times))
+            new_length = len(rate) // len(times)
             nearest_multiple = int(len(times) * new_length)
             reshaped = rate[:nearest_multiple].reshape((len(times), new_length))
             rate = np.sum(reshaped, axis=1)
