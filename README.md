@@ -1,7 +1,7 @@
 <h1 align="center">FPP-SLE</h1>
 <div align="center">
-  
- ___A filtered Poisson processes and stochastic logistic equation comparison playground___
+
+ ___A filtered Poisson process and stochastic logistic equation comparison playground___
 
 [![PyPI version](https://img.shields.io/pypi/v/fpp-sle)](https://pypi.org/project/fpp-sle/)
 [![Python version](https://img.shields.io/pypi/pyversions/fpp-sle)](https://pypi.org/project/fpp-sle/)
@@ -31,6 +31,15 @@ poetry install
 pre-commit install
 ```
 
+Before committing new changes to a branch you can run command
+
+```sh
+nox
+```
+
+to run the full test suite. You will need [Poetry], [nox] and [nox-poetry] installed for
+this.
+
 ## Usage
 
 See the [examples.py] script for working examples. The main classes and functions this
@@ -46,7 +55,7 @@ package provide is
 - `get_arrival_times` (inside the `fpp` module)
 
   This is a module that holds functions that draws arrival times according to some
-  non-negative numpy array or callable, that is the variable rate process.
+  non-negative numpy array or callable, that is, the variable rate process.
 
   - `pass_rate` (inside `get_arrival_times`)
 
@@ -61,11 +70,14 @@ package provide is
     returns arrival times based on the rate function. Currently only one generator function
     is implemented (`from_inhomogeneous_poisson_process`) which draws arrival times as if
     the rate was the underlying rate of a Poisson process.
-   
+
 - `sde`
 
-  This module holds different implementations of stochastic differential equations. See the docstring of the individual functions for explanations.
+  This module holds different implementations of stochastic differential equations. See
+  the docstring of the individual functions for explanations.
 
 [pypi]: https://pypi.org/
 [poetry]: https://python-poetry.org
 [examples.py]: ./assets/examples.py
+[nox]: https://nox.thea.codes/en/stable/
+[nox-poetry]: https://nox-poetry.readthedocs.io/
