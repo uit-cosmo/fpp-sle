@@ -23,7 +23,7 @@ pre-commit-hooks = "^4.1.0"
 pytest = "^7.0.1"
 isort = "^5.10.1"
 darglint = "^1.8.1"
-pyupgrade = "^2.31.0"
+pyupgrade = "^2.31.1"
 cosmoplots = "^0.1.5"
 
 [build-system]
