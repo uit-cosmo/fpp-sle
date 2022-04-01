@@ -1,4 +1,4 @@
-"""Module implementing superposed pulses."""
+"""Implementation of superposed pulses variable rate forcing class."""
 
 from typing import Callable
 
