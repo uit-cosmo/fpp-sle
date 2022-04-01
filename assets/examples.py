@@ -39,8 +39,14 @@ def rate_function(t):
     return arr
 
 
-def variable_rate_example() -> None:
-    """Run the example."""
+def variable_rate_example(callable_rate: bool) -> None:
+    """Run the example.
+
+    Parameters
+    ----------
+    callable_rate: bool
+        The rate function.
+    """
     # Define parameters
     gamma = 1.0
     n = 9999
@@ -48,25 +54,31 @@ def variable_rate_example() -> None:
     total_duration = int(n * dt)
 
     # Create a rate process. This acts as a varying gamma over the time series.
-    rate = sde.ornstein_uhlenbeck(dt=dt, n=n, x0=0.1, theta=1.0, mu=gamma, sigma=1.0)
-    rate = abs(rate)
-    # rate = rate_function  # Uncomment for example with callable rate function
+    if callable_rate:
+        rate = rate_function
+    else:
+        rate = abs(
+            sde.ornstein_uhlenbeck(dt=dt, n=n, x0=0.1, theta=1.0, mu=gamma, sigma=1.0)
+        )
 
     # We need to create arrival times from this rate process, which are used by the
     # `VariableRateForcing` class. The class knows only about the time axis and the
     # constant gamma value, so we have to provide the rate process corresponding to the
     # constant gamma value, and a way of obtaining arrival times from the rate process.
 
-    # Lets say we want arrival times to simply be the cumulative sum of the rate process:
+    # Lets say we want arrival times to simply be the cumulative sum of the rate
+    # process:
     # cumsum = fpp.get_arrival_times.from_cumsum
+    # ... or maybe we want arrival times to be drawn from an inhomogeneous Poisson
+    # process:
     inhom = fpp.get_arrival_times.from_inhomogeneous_poisson_process
     # We pass in the rate process to this converter function, in addition to a keyword
-    # specifying if the rate process should be assumed to have one element per pulse (same
-    # shape as the time axis, `same_shape=True`) or if the rate function is much denser
-    # (approximating a continuous function compared to the number of pulses).
-    # arrival_times_func = fpp.get_arrival_times.pass_rate(cumsum, rate, same_shape=False)
+    # specifying if the rate process should be assumed to have one element per pulse
+    # (same shape as the time axis, `same_shape=True`) or if the rate function is much
+    # denser (approximating a continuous function compared to the number of pulses).
+    # arrival_times_func = fpp.get_arrival_times.pass_rate(cumsum, rate)
     arrival_times_func = fpp.get_arrival_times.pass_rate(inhom, rate)
-    # The above is equivalent to using a decorator on the `cumsum` function.
+    # The above is equivalent to using a decorator on the `cumsum`/`inhom` function.
 
     # Now we create the forcing class and specify which arrival time function to use:
     frc = fpp.VariableRateForcing()
@@ -81,9 +93,12 @@ def variable_rate_example() -> None:
     arrival_times = sp.get_last_used_forcing().arrival_times
     amplitudes = sp.get_last_used_forcing().amplitudes
 
-    ax.plot(times, rate[: len(times)], label="Rate")
-    # Uncomment the below for example with callable rate function
-    # ax.plot(times, rate(times) / np.max(rate(times)) * max(amplitudes), label="Rate")
+    if isinstance(rate, np.ndarray):
+        ax.plot(times, rate[: len(times)], label="Rate")
+    else:
+        ax.plot(
+            times, rate(times) / np.max(rate(times)) * max(amplitudes), label="Rate"
+        )
 
     ax.bar(arrival_times, -1, width=0.1, label="Arrival Times")
     ax.set_xlabel("Time")
@@ -100,4 +115,5 @@ def variable_rate_example() -> None:
 
 
 if __name__ == "__main__":
-    variable_rate_example()
+    callable_rate = True
+    variable_rate_example(callable_rate)
