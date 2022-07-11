@@ -23,7 +23,7 @@ numba = ">=0.53.1,<0.56.0"
 superposed-pulses = "^1.2"
 
 [tool.poetry.dev-dependencies]
-black = "^22.1.0"
+black = "^22.6.0"
 bandit = "1.7.4"
 mypy = "^0.960"
 flake8 = "^4.0.1"
