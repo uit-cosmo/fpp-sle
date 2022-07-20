@@ -25,7 +25,7 @@ superposed-pulses = "^1.2"
 [tool.poetry.dev-dependencies]
 black = "^22.6.0"
 bandit = "1.7.4"
-mypy = "^0.961"
+mypy = "^0.971"
 flake8 = "^4.0.1"
 pre-commit = "^2.19.0"
 pre-commit-hooks = "^4.2.0"
