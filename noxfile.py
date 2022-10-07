@@ -10,7 +10,7 @@ from nox_poetry import Session, session
 
 package = "fpp_sle"
 owner, repository = "engeir", "fpp-sle"
-python_versions = ["3.9", "3.8"]
+python_versions = ["3.10", "3.9", "3.8"]
 nox.options.sessions = (
     "pre-commit",
     "safety",
@@ -44,7 +44,8 @@ def install_with_constraints(session: Session, *args: str, **kwargs: Any) -> Non
         session.run(
             "poetry",
             "export",
-            "--dev",
+            "--with",
+            "dev",
             "--without-hashes",
             "--format=requirements.txt",
             f"--output={requirements.name}",
@@ -106,7 +107,7 @@ def activate_virtualenv_in_precommit_hooks(session: Session) -> None:
         hook.write_text("\n".join(lines))
 
 
-@session(name="pre-commit", python="3.9")
+@session(name="pre-commit", python="3.10")
 def precommit(session: Session) -> None:
     """Lint using pre-commit.
 
@@ -138,7 +139,7 @@ def precommit(session: Session) -> None:
         activate_virtualenv_in_precommit_hooks(session)
 
 
-@session(python="3.9")
+@session(python="3.10")
 def safety(session: Session) -> None:
     """Scan dependencies for insecure packages.
 
@@ -188,7 +189,7 @@ def tests(session: Session) -> None:
             session.notify("coverage")
 
 
-@session(python="3.9")
+@session(python="3.10")
 def coverage(session: Session) -> None:
     """Produce the coverage report.
 
