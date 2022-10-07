@@ -21,25 +21,6 @@ The package is publised on [PyPI] and installable via `pip`:
 pip install fpp-sle
 ```
 
-To contribute to the project, clone and install the full development version (uses
-[poetry] for dependencies):
-
-```sh
-git clone https://github.com/engeir/fpp-sle
-cd fpp-sle
-poetry install
-pre-commit install
-```
-
-Before committing new changes to a branch you can run command
-
-```sh
-nox
-```
-
-to run the full test suite. You will need [Poetry], [nox] and [nox-poetry] installed for
-this.
-
 ## Usage
 
 See the [examples.py] script for working examples. The main classes and functions this
@@ -75,6 +56,27 @@ package provide is
 
   This module holds different implementations of stochastic differential equations. See
   the docstring of the individual functions for explanations.
+
+## Contributing
+
+To contribute to the project, clone and install the full development version (uses
+[poetry] for dependencies):
+
+```sh
+git clone https://github.com/engeir/fpp-sle
+cd fpp-sle
+poetry install
+pre-commit install
+```
+
+Before committing new changes to a branch you may run command
+
+```sh
+nox
+```
+
+to run the full test suite. You will need [Poetry], [nox] and [nox-poetry] installed for
+this.
 
 [pypi]: https://pypi.org/
 [poetry]: https://python-poetry.org
