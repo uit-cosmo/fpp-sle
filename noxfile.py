@@ -106,7 +106,7 @@ def activate_virtualenv_in_precommit_hooks(session: Session) -> None:
         hook.write_text("\n".join(lines))
 
 
-@session(name="pre-commit", python="3.9")
+@session(name="pre-commit", python="3.10")
 def precommit(session: Session) -> None:
     """Lint using pre-commit.
 
@@ -138,7 +138,7 @@ def precommit(session: Session) -> None:
         activate_virtualenv_in_precommit_hooks(session)
 
 
-@session(python="3.9")
+@session(python="3.10")
 def safety(session: Session) -> None:
     """Scan dependencies for insecure packages.
 
