@@ -10,7 +10,7 @@ from nox_poetry import Session, session
 
 package = "fpp_sle"
 owner, repository = "engeir", "fpp-sle"
-python_versions = ["3.9", "3.8"]
+python_versions = ["3.10", "3.9", "3.8"]
 nox.options.sessions = (
     "pre-commit",
     "safety",
@@ -188,7 +188,7 @@ def tests(session: Session) -> None:
             session.notify("coverage")
 
 
-@session(python="3.9")
+@session(python="3.10")
 def coverage(session: Session) -> None:
     """Produce the coverage report.
 
