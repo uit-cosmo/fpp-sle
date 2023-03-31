@@ -63,7 +63,7 @@ To contribute to the project, clone and install the full development version (us
 [poetry] for dependencies):
 
 ```sh
-git clone https://github.com/engeir/fpp-sle
+git clone https://github.com/uit-cosmo/fpp-sle.git
 cd fpp-sle
 poetry install
 pre-commit install
