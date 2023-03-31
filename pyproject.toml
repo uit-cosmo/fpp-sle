@@ -2,7 +2,7 @@
 name = "fpp-sle"
 version = "0.1.0"
 description = "Implements FPP and SLE algorithms"
-authors = ["engeir <eirroleng@gmail.com>"]
+authors = ["engeir <engeir@pm.me>"]
 license = "GPL-3.0-or-later"
 readme = "README.md"
 packages = [{include = "fpp_sle", from = "src"}]
