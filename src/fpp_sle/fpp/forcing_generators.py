@@ -3,7 +3,7 @@
 from typing import Callable
 
 import numpy as np
-from model import forcing
+from superposedpulses import forcing
 
 
 class VariableRateForcing(forcing.ForcingGenerator):
