@@ -6,7 +6,7 @@ You need the development version of this module to run this script.
 import cosmoplots
 import matplotlib.pyplot as plt
 import numpy as np
-from model import point_model
+from superposedpulses import point_model
 
 from fpp_sle import fpp, sde
 
