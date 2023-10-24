@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fpp-sle"
-version = "0.1.2"
+version = "0.2.0"
 description = "Implements FPP and SLE algorithms"
 authors = ["engeir <engeir@pm.me>"]
 license = "GPL-3.0-or-later"
@@ -18,7 +18,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.11"
+python = ">=3.8,<3.12"
 numpy = "^1.20.2"
 numba = ">=0.53.1,<0.58.0"
 superposed-pulses = "^1.2"
