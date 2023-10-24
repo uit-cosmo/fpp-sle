@@ -29,14 +29,6 @@ repos:
     entry: poetry run black src
     types: [python]
 
-  - id: flake8
-    name: flake8
-    stages: [commit]
-    language: system
-    entry: poetry run flake8 src
-    types: [python]
-    exclude: setup.py
-
   - id: mypy
     name: mypy
     stages: [commit]
@@ -53,13 +45,12 @@ repos:
     types: [python]
     require_serial: true
 
-  - id: pyupgrade
-    name: pyupgrade
+  - id: ruff
+    name: ruff
     stages: [commit]
     language: system
-    entry: poetry run pyupgrade
+    entry: poetry run ruff src tests
     types: [python]
-    require_serial: true
 
   # - id: pytest
   #   name: pytest

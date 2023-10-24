@@ -5,16 +5,17 @@ description = "Implements FPP and SLE algorithms"
 authors = ["engeir <engeir@pm.me>"]
 license = "GPL-3.0-or-later"
 readme = "README.md"
-packages = [{include = "fpp_sle", from = "src"}]
+packages = [{ include = "fpp_sle", from = "src" }]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Science/Research",
-    "Intended Audience :: Education",
-    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Topic :: Scientific/Engineering :: Physics"
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Education",
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Scientific/Engineering :: Physics",
 ]
 
 [tool.poetry.dependencies]
@@ -36,7 +37,86 @@ isort = "^5.10.1"
 darglint = "^1.8.1"
 pyupgrade = "^3.0.0"
 cosmoplots = ">=0.1.6,<0.4.0"
+ruff = "^0.1.1"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+select = [ # https://docs.astral.sh/ruff/rules/
+  "B",  # flake8-bugbear
+  "D",  # pydocstyle
+  "E",  # pycodestyle
+  "F",  # pyflakes
+  "I",  # isort
+  "PL", # pylint
+  "Q",  # flake8-quotes
+  "UP", # pyupgrade
+]
+ignore = ["E266", "E501", "PLR0913"]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+  ".bzr",
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".git-rewrite",
+  ".hg",
+  ".mypy_cache",
+  ".nox",
+  ".pants.d",
+  ".pytype",
+  ".ruff_cache",
+  ".svn",
+  ".tox",
+  ".venv",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "node_modules",
+  "venv",
+]
+per-file-ignores = {}
+
+# Same as Black.
+line-length = 88
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# Assume Python 3.8
+target-version = "py38"
+
+[tool.ruff.pydocstyle]
+convention = "numpy"
+ignore-decorators = ["typing.overload"]
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+
+[tool.ruff.flake8-import-conventions]
+[tool.ruff.flake8-import-conventions.aliases]
+# Declare the default aliases.
+"matplotlib.pyplot" = "plt"
+numpy = "np"
+
+[tool.ruff.isort]
+case-sensitive = true
+known-local-folder = ["src", "fpp_sle"]
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 88
+profile = "black"
+combine_as_imports = true
