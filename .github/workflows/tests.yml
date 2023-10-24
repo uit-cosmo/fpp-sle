@@ -32,6 +32,9 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3.6.0
 
+      - name: Lint with Ruff
+        uses: chartboost/ruff-action@v1
+
       # Setup Python (faster than using Python container)
       - name: Setup Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
