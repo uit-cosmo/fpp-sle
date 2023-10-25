@@ -60,11 +60,15 @@ package provide is
 ## Contributing
 
 To contribute to the project, clone and install the full development version (uses
-[poetry] for dependencies):
+[poetry] for dependencies). There is also a `.rtx.toml` file that installs and sets up
+an appropriate virtual environment if [rtx](https://github.com/jdx/rtx) is available on
+your system (it's really good, check it out!).
 
 ```sh
 git clone https://github.com/uit-cosmo/fpp-sle.git
 cd fpp-sle
+# Set up a virtual environment, for example with rtx
+rtx i
 poetry install
 pre-commit install
 ```
