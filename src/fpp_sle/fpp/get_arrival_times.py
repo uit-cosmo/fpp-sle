@@ -29,7 +29,7 @@ def check_types(
 
     Parameters
     ----------
-    func: Callable
+    func : Callable
         The function to decorate.
 
     Returns
@@ -67,11 +67,11 @@ def pass_rate(func, rate, **kwargs: Any) -> Callable[[np.ndarray, int], np.ndarr
 
     Parameters
     ----------
-    func: function
+    func : function
         The function to decorate.
-    rate: np.ndarray
+    rate : np.ndarray
         The rate process to pass on to the function.
-    kwargs: Any
+    kwargs : Any
         Additional keyword arguments to pass to the function.
 
     Returns
@@ -95,9 +95,9 @@ def pass_rate(func, rate, **kwargs: Any) -> Callable[[np.ndarray, int], np.ndarr
 
         Parameters
         ----------
-        times: np.ndarray
+        times : np.ndarray
             The time axis.
-        total_pulses: int
+        total_pulses : int
             The total number of pulses.
 
         Returns
@@ -130,16 +130,16 @@ def from_cumsum(
 
     Parameters
     ----------
-    rate: Union[Callable, np.ndarray]
+    rate : Union[Callable, np.ndarray]
         The rate process to convert.
-    times: np.ndarray
+    times : np.ndarray
         The time axis.
-    total_pulses: int
+    total_pulses : int
         The total number of pulses to generate.
-    same_shape: bool
+    same_shape : bool
         If True, the rate process is assumed to be the same length as the time array.
         Defaults to True.
-    kwargs: Any
+    kwargs : Any
         Additional keyword arguments to pass to the rate process.
 
     Returns
@@ -189,16 +189,16 @@ def from_inhomogeneous_poisson_process(
 
     Parameters
     ----------
-    rate: Union[Callable[..., Union[float, np.ndarray]], np.ndarray],
+    rate : Union[Callable[..., Union[float, np.ndarray]], np.ndarray],
         The rate process to convert. Can be a precomputed numpy array, or a callable. If
         it is a callable, it must return a float or numpy array (depending on the input).
         Any keyword arguments passed to `from_inhomogeneous_poisson_process` will be
         passed on to the rate process callable.
-    times: np.ndarray
+    times : np.ndarray
         The time axis.
-    total_pulses: int
+    total_pulses : int
         The total number of pulses to generate.
-    kwargs: Any
+    kwargs : Any
         Additional keyword arguments to pass to the rate process.
 
     Returns

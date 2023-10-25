@@ -87,19 +87,19 @@ def ornstein_uhlenbeck(
 
     Parameters
     ----------
-    dt: float
+    dt : float
         Time step.
-    n: int
+    n : int
         Number of time steps/iterations.
-    x0: float
+    x0 : float
         Initial state.
-    theta: float
+    theta : float
         Speed of reversion.
-    mu: float
+    mu : float
         Long term mean.
-    sigma: float
+    sigma : float
         Volatility.
-    seed: float
+    seed : float
         Seed for the random number generator.
 
     Returns
@@ -149,17 +149,17 @@ def geometric_brownian_motion(
 
     Parameters
     ----------
-    dt: float
+    dt : float
         Time step.
-    n: int
+    n : int
         Number of time steps/iterations.
-    x0: float
+    x0 : float
         Initial state.
-    mu: float
+    mu : float
         Long term mean.
-    sigma: float
+    sigma : float
         Volatility.
-    seed: float
+    seed : float
         Seed for the random number generator.
 
     Returns
@@ -203,20 +203,20 @@ def stochastic_logistic_equation(
 
     Parameters
     ----------
-    dt: float
+    dt : float
         Time step
-    n: int
+    n : int
         Number of iterations
-    x0: float
+    x0 : float
         Initial state
-    gamma: float
+    gamma : float
         Intermittency parameter
-    log: bool
+    log : bool
         If True, estimate log(x_t) and then take the exponential.
-    strong: bool
+    strong : bool
         If True, estimate the logarithm using the strong order 1.5, weak order 3 algorithm
         of A. Rossler DOI:10.1137/09076636X
-    seed: float
+    seed : float
         Seed for random state
 
     Returns
@@ -301,17 +301,17 @@ def sde_gexp(
 
     Parameters
     ----------
-    dt: float
+    dt : float
         Time steps.
-    n: int
+    n : int
         Number of time steps/iterations.
-    x0: float
+    x0 : float
         Initial state.
-    gamma: float
+    gamma : float
         Shape parameter.
-    sqrt: bool
+    sqrt : bool
         If True, estimate sqrt(x_t) and then square it.
-    seed: float
+    seed : float
         Seed for the random number generator.
 
     Returns

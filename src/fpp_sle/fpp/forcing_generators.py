@@ -22,9 +22,9 @@ class VariableRateForcing(forcing.ForcingGenerator):
 
         Parameters
         ----------
-        times: np.ndarray
+        times : np.ndarray
             The times at which the forcing is to be generated.
-        gamma: float
+        gamma : float
             Intermittency parameter, long term mean of the rate process.
 
         Returns
@@ -45,7 +45,7 @@ class VariableRateForcing(forcing.ForcingGenerator):
 
         Parameters
         ----------
-        f: Callable[[np.ndarray, int], np.ndarray]
+        f : Callable[[np.ndarray, int], np.ndarray]
             The arrival times function.
         """
         self._arrival_times_function = f
@@ -55,7 +55,7 @@ class VariableRateForcing(forcing.ForcingGenerator):
 
         Parameters
         ----------
-        f: Callable[[int], np.ndarray]
+        f : Callable[[int], np.ndarray]
             The amplitude distribution function.
         """
         self._amplitude_distribution = f
@@ -65,7 +65,7 @@ class VariableRateForcing(forcing.ForcingGenerator):
 
         Parameters
         ----------
-        f: Callable[[int], np.ndarray]
+        f : Callable[[int], np.ndarray]
             The duration distribution function.
         """
         self._duration_distribution = f
@@ -75,9 +75,9 @@ class VariableRateForcing(forcing.ForcingGenerator):
 
         Parameters
         ----------
-        times: np.ndarray
+        times : np.ndarray
             The times at which the forcing is to be generated.
-        total_pulses: int
+        total_pulses : int
             The total number of pulses.
 
         Returns
