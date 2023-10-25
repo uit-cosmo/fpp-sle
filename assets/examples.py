@@ -44,7 +44,7 @@ def variable_rate_example(callable_rate: bool) -> None:
 
     Parameters
     ----------
-    callable_rate: bool
+    callable_rate : bool
         The rate function.
     """
     # Define parameters

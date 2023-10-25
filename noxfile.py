@@ -33,11 +33,11 @@ def install_with_constraints(session: Session, *args: str, **kwargs: Any) -> Non
 
     Parameters
     ----------
-    session: Session
+    session : Session
         The Session object.
-    args: str
+    args : str
         Command-line arguments for pip.
-    kwargs: Any
+    kwargs : Any
         Additional keyword arguments for Session.install.
     """
     with tempfile.NamedTemporaryFile() as requirements:
@@ -63,7 +63,7 @@ def activate_virtualenv_in_precommit_hooks(session: Session) -> None:
 
     Parameters
     ----------
-    session: Session
+    session : Session
         The Session object.
     """
     if session.bin is None:
@@ -113,7 +113,7 @@ def precommit(session: Session) -> None:
 
     Parameters
     ----------
-    session: Session
+    session : Session
         The Session object.
     """
     args = session.posargs or ["run", "--all-files", "--show-diff-on-failure"]
@@ -123,6 +123,7 @@ def precommit(session: Session) -> None:
         "darglint",
         "ruff",
         "isort",
+        "pydocstringformatter",
         "mypy",
         "pep8-naming",
         "pre-commit",
@@ -154,7 +155,7 @@ def mypy(session: Session) -> None:
 
     Parameters
     ----------
-    session: Session
+    session : Session
         The Session object.
     """
     args = session.posargs or ["src", "tests"]
@@ -172,7 +173,7 @@ def tests(session: Session) -> None:
 
     Parameters
     ----------
-    session: Session
+    session : Session
         The Session object.
     """
     session.install(".")
@@ -190,7 +191,7 @@ def coverage(session: Session) -> None:
 
     Parameters
     ----------
-    session: Session
+    session : Session
         The Session object.
     """
     # Do not use session.posargs unless this is the only session.
@@ -217,7 +218,7 @@ def typeguard(session: Session) -> None:
 
     Parameters
     ----------
-    session: Session
+    session : Session
         The Session object.
     """
     session.install(".")
@@ -231,7 +232,7 @@ def xdoctest(session: Session) -> None:
 
     Parameters
     ----------
-    session: Session
+    session : Session
         The Session object.
     """
     args = session.posargs or ["all"]

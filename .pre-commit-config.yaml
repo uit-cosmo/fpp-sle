@@ -15,6 +15,7 @@ repos:
     stages: [commit]
     entry: check-added-large-files
     language: system
+
   - id: isort
     name: isort
     stages: [commit]
@@ -49,9 +50,16 @@ repos:
     name: ruff
     stages: [commit]
     language: system
-    entry: poetry run ruff src tests
+    entry: poetry run ruff src tests assets
     types: [python]
     args: [ --fix, --exit-non-zero-on-fix ]
+
+  - id: pydocstringformatter
+    name: pydocstringformatter
+    stages: [commit]
+    language: system
+    entry: poetry run pydocstringformatter src tests assets
+    types: [python]
 
   # - id: pytest
   #   name: pytest
