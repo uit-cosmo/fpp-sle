@@ -1,7 +1,7 @@
 <h1 align="center">FPP-SLE</h1>
 <div align="center">
 
- ___A filtered Poisson process and stochastic logistic equation comparison playground___
+_**A filtered Poisson process and stochastic logistic equation comparison playground**_
 
 [![PyPI version](https://img.shields.io/pypi/v/fpp-sle)](https://pypi.org/project/fpp-sle/)
 [![Python version](https://img.shields.io/pypi/pyversions/fpp-sle)](https://pypi.org/project/fpp-sle/)
@@ -30,8 +30,8 @@ package provide is
 
   This is a class that inherit from the forcing generator class provided by
   [`superposed-pulses`](https://github.com/uit-cosmo/superposed-pulses). The class adds
-  a method for setting a custom function that generates arrival times given the time axis
-  and a given number of total pulses to generate.
+  a method for setting a custom function that generates arrival times given the time
+  axis and a given number of total pulses to generate.
 
 - `get_arrival_times` (inside the `fpp` module)
 
@@ -40,17 +40,17 @@ package provide is
 
   - `pass_rate` (inside `get_arrival_times`)
 
-    Used to decorate the functions that draws arrival times from the rate function. This is
-    the function you may want to pass in to the `set_arrival_times_function` method of the
-    `VariableRateForcing` class. It decorates functions within `get_arrival_times` staring
-    with `from_`.
+    Used to decorate the functions that draws arrival times from the rate function. This
+    is the function you may want to pass in to the `set_arrival_times_function` method
+    of the `VariableRateForcing` class. It decorates functions within
+    `get_arrival_times` staring with `from_`.
 
   - `from_` (inside `get_arrival_times`)
 
-    These are generator functions that can take a callable or a numpy array as input, and
-    returns arrival times based on the rate function. Currently only one generator function
-    is implemented (`from_inhomogeneous_poisson_process`) which draws arrival times as if
-    the rate was the underlying rate of a Poisson process.
+    These are generator functions that can take a callable or a numpy array as input,
+    and returns arrival times based on the rate function. Currently only one generator
+    function is implemented (`from_inhomogeneous_poisson_process`) which draws arrival
+    times as if the rate was the underlying rate of a Poisson process.
 
 - `sde`
 
