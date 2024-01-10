@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fpp-sle"
-version = "0.2.2"
+version = "0.2.3"
 description = "Implements FPP and SLE algorithms"
 authors = ["engeir <engeir@pm.me>"]
 license = "GPL-3.0-or-later"
