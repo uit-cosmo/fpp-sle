@@ -23,7 +23,7 @@ python = ">=3.8,<3.13"
 numpy = "^1.20.2"
 numba = ">=0.53.1,<0.59.0"
 superposed-pulses = "^1.2"
-importlib-metadata = ">=5,<7"
+importlib-metadata = ">=5,<8"
 
 [tool.poetry.group.dev.dependencies]
 black = ">=22.10,<24.0"
