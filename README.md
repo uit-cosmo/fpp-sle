@@ -17,7 +17,7 @@ _**A filtered Poisson process and stochastic logistic equation comparison playgr
 
 The package is publised on [PyPI] and installable via `pip`:
 
-```sh
+```bash
 pip install fpp-sle
 ```
 
@@ -60,22 +60,22 @@ package provide is
 ## Contributing
 
 To contribute to the project, clone and install the full development version (uses
-[poetry] for dependencies). There is also a `.rtx.toml` file that installs and sets up
-an appropriate virtual environment if [rtx](https://github.com/jdx/rtx) is available on
-your system (it's really good, check it out!).
+[poetry] for dependencies). There is also a `.mise.toml` file that installs and sets up
+an appropriate virtual environment if [mise](https://mise.jdx.dev/) is available on your
+system.
 
-```sh
+```bash
 git clone https://github.com/uit-cosmo/fpp-sle.git
 cd fpp-sle
-# Set up a virtual environment, for example with rtx
-rtx i
+# Set up a virtual environment, for example with mise
+mise i  # optional
 poetry install
 pre-commit install
 ```
 
 Before committing new changes to a branch you may run command
 
-```sh
+```bash
 nox
 ```
 
