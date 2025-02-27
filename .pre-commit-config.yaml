@@ -12,27 +12,27 @@ repos:
   hooks:
   - id: check-added-large-files
     name: Check for added large files
-    stages: [commit]
+    stages: [pre-commit]
     entry: check-added-large-files
     language: system
 
   - id: isort
     name: isort
-    stages: [commit]
+    stages: [pre-commit]
     language: system
     entry: poetry run isort src
     types: [python]
 
   - id: black
     name: black
-    stages: [commit]
+    stages: [pre-commit]
     language: system
     entry: poetry run black src
     types: [python]
 
   - id: mypy
     name: mypy
-    stages: [commit]
+    stages: [pre-commit]
     language: system
     entry: poetry run mypy
     types: [python]
@@ -40,7 +40,7 @@ repos:
 
   - id: darglint
     name: darglint
-    stages: [commit]
+    stages: [pre-commit]
     language: system
     entry: poetry run darglint src
     types: [python]
@@ -48,7 +48,7 @@ repos:
 
   - id: ruff
     name: ruff
-    stages: [commit]
+    stages: [pre-commit]
     language: system
     entry: poetry run ruff src tests assets
     types: [python]
@@ -56,7 +56,7 @@ repos:
 
   - id: pydocstringformatter
     name: pydocstringformatter
-    stages: [commit]
+    stages: [pre-commit]
     language: system
     entry: poetry run pydocstringformatter src tests assets
     types: [python]
